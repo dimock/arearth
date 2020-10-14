@@ -27,6 +27,7 @@ public class ArEarthFont {
     private float [] charTextureCoordinates = new float[4 * (128 - 32)];
     private float charBottoms[] = new float[128 - 32];
     private float charHeights[] = new float[128 - 32];
+    private float charXYratio[] = new float[128 - 32];
     private ShortBuffer triangles;
     private float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
     private int program_;
@@ -39,6 +40,7 @@ public class ArEarthFont {
     private Matrix4 matrixMVP = new Matrix4();
     private Vector3 pos_ = new Vector3();
     private RectF textSize_ = new RectF();
+    private float viewportRatio_ = 0;
 
     public ArEarthFont(ArEarthActivity context, int fontSize, FontStyle style) {
         context_ = context;
@@ -59,6 +61,10 @@ public class ArEarthFont {
         color[1] = (float)g / 255.0f;
         color[2] = (float)b / 255.0f;
         color[3] = (float)a / 255.0f;
+    }
+
+    public void updateViewportRatio(float ratio) {
+        viewportRatio_ = ratio;
     }
 
     private void createFontTexture() {
@@ -104,6 +110,8 @@ public class ArEarthFont {
         double square = width * height;
         int twidth = 1 << (int)(Math.log(Math.sqrt(square)) / Math.log(2.0) + 1);
         int theight = 1 << (int)(Math.log(square / twidth) / Math.log(2.0) + 1);
+        float twidth1 = 1.0f / twidth;
+        float theight1 = 1.0f / theight;
         Bitmap bitmap = Bitmap.createBitmap(twidth, theight, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         bitmap.eraseColor(0);
@@ -138,10 +146,11 @@ public class ArEarthFont {
             float y1 = y;
             charBottoms[i] = (float)bounds.bottom / height;
             charHeights[i] = curheight / height;
-            charTextureCoordinates[i*4 + 0] = x0 / twidth;
-            charTextureCoordinates[i*4 + 1] = y0 / theight;
-            charTextureCoordinates[i*4 + 2] = x1 / twidth;
-            charTextureCoordinates[i*4 + 3] = y1 / theight;
+            charXYratio[i] = curwidth / curheight;
+            charTextureCoordinates[i*4 + 0] = x0 * twidth1;
+            charTextureCoordinates[i*4 + 1] = y0 * theight1;
+            charTextureCoordinates[i*4 + 2] = x1 * twidth1;
+            charTextureCoordinates[i*4 + 3] = y1 * theight1;
             x += curwidth;
         }
         texture_ = new ArEarthTexture(bitmap);
@@ -179,11 +188,10 @@ public class ArEarthFont {
     }
 
     private void fillTextBuffers(String text, float h) {
-        textSize_.setEmpty();
-
         if(text.length() == 0) {
             return;
         }
+
         int lines = 1;
         for(int i = 0; i < text.length(); ++i) {
             char c = text.charAt(i);
@@ -195,6 +203,7 @@ public class ArEarthFont {
         float x = 0;
         float y = lines * h;
 
+        boolean bboxInitialized = false;
         for(int i = 0; i < text.length(); ++i) {
             char c = text.charAt(i);
             if(c == '\n') {
@@ -213,9 +222,8 @@ public class ArEarthFont {
             float ty0 = charTextureCoordinates[j*4 + 1];
             float tx1 = charTextureCoordinates[j*4 + 2];
             float ty1 = charTextureCoordinates[j*4 + 3];
-            float dx = tx1 - tx0;
-            float dy = ty1 - ty0;
-            float w = h * charHeights[j] * dx / dy;
+            float xyRatio = charXYratio[j];
+            float w = h * charHeights[j] * viewportRatio_ * xyRatio;
             float x0 = x;
             float x1 = x0 + w;
             float y1 = y - charBottoms[j] * h;
@@ -223,7 +231,13 @@ public class ArEarthFont {
             float z = 0;
             x += w;
 
-            textSize_.union(x0, y0);
+            if(!bboxInitialized) {
+                textSize_.set(x0, y0, x0, y0);
+                bboxInitialized = true;
+            }
+            else {
+                textSize_.union(x0, y0);
+            }
             textSize_.union(x1, y1);
 
             vertices.put(i*12 + 0, x0);

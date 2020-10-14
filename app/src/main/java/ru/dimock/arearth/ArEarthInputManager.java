@@ -30,13 +30,13 @@ public class ArEarthInputManager {
 
     private Vector3 textPos = new Vector3();
 
-    private static float bigLetterSize = 0.2f;
-    private static float mediumLetterSize = 0.1f;
-    private static float smallLetterSize = 0.06f;
-    private static float helpLetterSize = 0.06f;
+    private static float bigLetterSize = 0.12f;
+    private static float mediumLetterSize = 0.085f;
+    private static float smallLetterSize = 0.042f;
+    private static float helpLetterSize = 0.05f;
     private static float glineSpacing = 0.02f;
     private static float glogoPosY = 0.2f;
-    private static float ghelpCenterPosY = 0.0f;
+    private static float ghelpStartPosY = 0.4f;
     private static float buttonHeight = 0.05f;
     private static float buttonMargin = 0.05f;
     private static float helpTextMargin = 0.01f;
@@ -65,7 +65,10 @@ public class ArEarthInputManager {
     }
 
     public void updateViewport(int width, int height) {
-        float ratio = (float)height / width;
+        float xdpi = context.getResources().getDisplayMetrics().xdpi;
+        float ydpi = context.getResources().getDisplayMetrics().ydpi;
+        float ratio = (height * xdpi) / (width * ydpi);
+        font.updateViewportRatio(ratio);
         buttonSize = new Vector3(buttonHeight*ratio, buttonHeight, 1);
         buttonOffset = new Vector3(buttonMargin*ratio, buttonMargin, 0);
         buttonPlacePos = new Vector3(1.0f - buttonOffset.x() - buttonSize.x(), -1.0f + buttonOffset.y() + buttonSize.y(), 0);
@@ -99,26 +102,28 @@ public class ArEarthInputManager {
         buttonRemove.setEnabled(false);
 
         textPos.assign(buttonPlacePos);
-        textPos.sety(textPos.y() - buttonSize.y()/2.0f);
+        textPos.sety(textPos.y());
         textPos.setx(textPos.x() - buttonSize.x() - helpTextMargin);
         font.draw(textPos, context.getResources().getString(R.string.place_earth), helpLetterSize, TextAlign.Right, TextAlign.Center);
 
         textPos.assign(buttonRemovePos);
-        textPos.sety(textPos.y() - buttonSize.y()/2.0f);
+        textPos.sety(textPos.y());
         textPos.setx(textPos.x() + buttonSize.x() + helpTextMargin);
         font.draw(textPos, context.getResources().getString(R.string.remove_earth), helpLetterSize, TextAlign.Left, TextAlign.Center);
 
         textPos.assign(buttonHelpPos);
-        textPos.sety(textPos.y() - buttonSize.y()/2.0f);
+        textPos.sety(textPos.y());
         textPos.setx(textPos.x() + buttonSize.x() + helpTextMargin);
         font.draw(textPos, context.getResources().getString(R.string.show_help), helpLetterSize, TextAlign.Left, TextAlign.Center);
 
         textPos.assign(buttonClosePos);
-        textPos.sety(textPos.y() - buttonSize.y()/2.0f);
+        textPos.sety(textPos.y());
         textPos.setx(textPos.x() - buttonSize.x() - helpTextMargin);
         font.draw(textPos, context.getResources().getString(R.string.exit_id), helpLetterSize, TextAlign.Right, TextAlign.Center);
 
-        float y = drawContinueMessage(ghelpCenterPosY);
+        float y = drawContinueMessage(ghelpStartPosY);
+        y -= bigLetterSize;
+        y = drawAppNameAndAuthor(y);
         y = drawSourceCodeMessage(y - glineSpacing);
         y = drawAttributions(y - glineSpacing);
         drawArCoreMessage(y - glineSpacing);
@@ -161,36 +166,48 @@ public class ArEarthInputManager {
         textPos.setx(0);
         textPos.sety(y);
         font.draw(textPos, context.getResources().getString(R.string.solar_system_1), smallLetterSize, TextAlign.Center, TextAlign.Bottom);
-
         y -= smallLetterSize;
+
         textPos.sety(y);
         font.draw(textPos, context.getResources().getString(R.string.solar_system_2), smallLetterSize, TextAlign.Center, TextAlign.Bottom);
+        y -= smallLetterSize;
 
+        textPos.sety(y);
+        font.draw(textPos, context.getResources().getString(R.string.solar_system_3), smallLetterSize, TextAlign.Center, TextAlign.Bottom);
+        y -= smallLetterSize;
+
+        textPos.sety(y);
+        font.draw(textPos, context.getResources().getString(R.string.solar_system_4), smallLetterSize, TextAlign.Center, TextAlign.Bottom);
         y -= 2*smallLetterSize;
+
         textPos.sety(y);
         font.draw(textPos, context.getResources().getString(R.string.nasa_reference_1), smallLetterSize, TextAlign.Center, TextAlign.Bottom);
-
         y -= smallLetterSize;
+
         textPos.sety(y);
         font.draw(textPos, context.getResources().getString(R.string.nasa_reference_2), smallLetterSize, TextAlign.Center, TextAlign.Bottom);
-
         y -= smallLetterSize;
+
         textPos.sety(y);
         font.draw(textPos, context.getResources().getString(R.string.nasa_reference_3), smallLetterSize, TextAlign.Center, TextAlign.Bottom);
-
         y -= smallLetterSize;
+
         return y;
     }
 
     private float drawArCoreMessage(float y) {
         textPos.sety(y);
         font.draw(textPos, context.getResources().getString(R.string.splash_screen_arcore_1), smallLetterSize, TextAlign.Center, TextAlign.Bottom);
-
         y -= smallLetterSize;
+
         textPos.sety(y);
         font.draw(textPos,context.getResources().getString(R.string.splash_screen_arcore_2), smallLetterSize, TextAlign.Center, TextAlign.Bottom);
-
         y -= smallLetterSize;
+
+        textPos.sety(y);
+        font.draw(textPos,context.getResources().getString(R.string.splash_screen_arcore_3), smallLetterSize, TextAlign.Center, TextAlign.Bottom);
+        y -= smallLetterSize;
+
         return y;
     }
 
@@ -198,16 +215,21 @@ public class ArEarthInputManager {
         textPos.setx(0);
         textPos.sety(y);
         font.draw(textPos, context.getResources().getString(R.string.app_name), bigLetterSize, TextAlign.Center, TextAlign.Bottom);
-
         y -= bigLetterSize;
+
+        String versionName = "(version " + BuildConfig.VERSION_NAME + ")";
+        textPos.sety(y);
+        font.draw(textPos, versionName, smallLetterSize, TextAlign.Center, TextAlign.Bottom);
+        y -= 2*smallLetterSize;
+
         textPos.sety(y);
         font.draw(textPos, context.getResources().getString(R.string.author_id), smallLetterSize, TextAlign.Center, TextAlign.Bottom);
-
         y -= smallLetterSize;
+
         textPos.sety(y);
         font.draw(textPos, context.getResources().getString(R.string.mit_license), smallLetterSize, TextAlign.Center, TextAlign.Bottom);
-
         y -= smallLetterSize;
+
         return y;
     }
 
@@ -222,7 +244,11 @@ public class ArEarthInputManager {
     private float drawSourceCodeMessage(float y) {
         textPos.setx(0);
         textPos.sety(y);
-        font.draw(textPos, context.getResources().getString(R.string.source_code_id), smallLetterSize, TextAlign.Center, TextAlign.Bottom);
+        font.draw(textPos, context.getResources().getString(R.string.source_code_id_1), smallLetterSize, TextAlign.Center, TextAlign.Bottom);
+        y -= smallLetterSize;
+
+        textPos.sety(y);
+        font.draw(textPos, context.getResources().getString(R.string.source_code_id_2), smallLetterSize, TextAlign.Center, TextAlign.Bottom);
         y -= smallLetterSize;
         return y;
     }

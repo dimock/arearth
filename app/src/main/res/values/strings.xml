@@ -3,9 +3,11 @@
     <string name="author_id">by Dmitry Sultanov</string>
     <string name="mit_license">under MIT license</string>
     <string name="press_help_id">Press ? for help</string>
-    <string name="source_code_id">Source code is available https://github.com/dimock/arearth</string>
-    <string name="splash_screen_arcore_1">This application runs on Google Play Services for AR (ARCore),</string>
-    <string name="splash_screen_arcore_2">which is provided by Google LLC and governed by the Google Privacy Policy</string>string>
+    <string name="source_code_id_1">Source code is available:</string>
+    <string name="source_code_id_2">https://github.com/dimock/arearth</string>
+    <string name="splash_screen_arcore_1">This application runs on Google Play Services</string>
+    <string name="splash_screen_arcore_2">for AR (ARCore), which is provided by Google LLC</string>string>
+    <string name="splash_screen_arcore_3">and governed by the Google Privacy Policy</string>string>
     <string name="place_earth">Place Earth</string>
     <string name="remove_earth">Remove Earth</string>
     <string name="show_help">Show Help</string>
@@ -19,8 +21,10 @@
     <string name="update_app">Please update this app</string>
     <string name="does_not_support_ar">This device does not support AR</string>
     <string name="ar_failed">Failed to create AR session</string>
-    <string name="solar_system_1">NASA Earth images are used (https://www.solarsystemscope.com/textures/)</string>
-    <string name="solar_system_2">Distributed under Attribution 4.0 International license (CC BY 4.0)</string>
+    <string name="solar_system_1">NASA Earth images are used</string>
+    <string name="solar_system_2">from https://www.solarsystemscope.com/textures/</string>
+    <string name="solar_system_3">Distributed under Attribution 4.0 International license</string>
+    <string name="solar_system_4">(CC BY 4.0)</string>
     <string name="nasa_reference_1">NASA Earth images from public domain are used</string>
     <string name="nasa_reference_2">https://visibleearth.nasa.gov/images/73580</string>
     <string name="nasa_reference_3">https://visibleearth.nasa.gov/images/73934</string>

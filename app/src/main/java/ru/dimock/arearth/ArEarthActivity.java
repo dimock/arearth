@@ -40,7 +40,7 @@ public class ArEarthActivity extends AppCompatActivity implements DisplayManager
     private boolean installRequested;
     private static final int CAMERA_PERMISSION_CODE = 0;
     private static final String CAMERA_PERMISSION = Manifest.permission.CAMERA;
-    private long splashDuration = 5000;
+    private long splashDuration = 3000;
     private Handler handler = new Handler();
     private Runnable runnable = new Runnable() {
         @Override

@@ -79,7 +79,7 @@ public class ArEarthGlRenderer implements GLSurfaceView.Renderer {
     }
 
     public void onSurfaceCreated(GL10 var1, EGLConfig var2) {
-        GLES20.glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         background = new ArEarthBkgnd(context);
         planet = new ArEarthPlanet(zNear, context);
         plane = new ArEarthPlane(planet.radius(), context);
